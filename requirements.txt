@@ -1,0 +1,7 @@
+torch
+torchvision
+tqdm
+safetensors
+timm
+scipy
+matplotlib
