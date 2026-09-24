@@ -4,7 +4,10 @@
 
 <sup>*</sup> LTCI, Télécom Paris, Institut Polytechnique de Paris, Palaiseau, France
 
-<!-- <a href="link"><img alt="Pape" src="https://img.shields.io/badge/GRSL_Paper-0068F0?style=for-the-badge" /></a> -->
+<div align="center">
+<!-- <a href="link"><img alt="Pape" src="https://img.shields.io/badge/GRSL-Paper-0068F0?style=flat-square&logo=ieee" /></a> -->
+<a href="link"><img alt="Pape" src="https://img.shields.io/badge/ArXiv-preprint-AA142D?style=flat-square&logo=arxiv" /></a>
+</div>
 
 # Overview
 
@@ -41,11 +44,15 @@ The `example.ipynb` file can be used straight away to perform unmixing on one of
 If you find our benchmarking tool helpful, please cite it as follows:
 
 ```
-@ARTICLE{Dabier_2026,
-title = {Benchmarking Hyperspectral Foundation Models for Hyperspectral Unmixing},
-author = {Dabier, Edgard and Tupin, Florence and Kervazo, Christophe and Gori, Pietro},
-year={2026},
-archivePrefix={arXiv}}
+@misc{dabier_2026,
+    title={Benchmarking Hyperspectral Foundation Models for Hyperspectral Unmixing}, 
+    author={Edgard Dabier and Christophe Kervazo and Pietro Gori and Florence Tupin},
+    year={2026},
+    eprint={2609.28283},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV},
+    url={https://arxiv.org/abs/2609.28283}, 
+}
 ```
 
 # Aknowledgments
