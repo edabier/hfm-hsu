@@ -3,8 +3,9 @@ import torch
 from timm.models.vision_transformer import Block
 
 import sys
-sys.path.insert(0, '..')
-from DOFA.wave_dynamic_layer import Dynamic_MLP_OFA
+# sys.path.insert(0, '..')
+sys.path.append("/home/ids/edabier/HSU/DOFA")
+from wave_dynamic_layer import Dynamic_MLP_OFA
 
 class OFAViT(nn.Module):
     """ Masked Autoencoder with VisionTransformer backbone

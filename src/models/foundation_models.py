@@ -17,12 +17,13 @@ sys.path.insert(0, '..')
 # from SpecAware.example import models_SpecAware_encoder # SpecAware
 # from spectral_earth.src.backbones import spec_vit, spec_resnet # SpecViT
 # from panopticon.dinov2.models import vision_transformer as panopticon_vits # Panopticon
-# import UniverSat.hubconf as buildUniverSat # UniverSat
+# import hubconf as buildUniverSat # UniverSat
 # import HyperFree.HyperFree.build_HyperFree as hf # HyperFree
 # from HyperFree.HyperFree.modeling import image_encoder # HyperFree
 # from HyperSL.engine.model import SpectralSharedEncoder # HyperSL
+# from RAMEN.pretraining.src.models.networks.encoder import RamenViT # RAMEN
 
-def instantiate_fm(fm_name, Y, c=None, size="large", version="v1", path="/home/ids/edabier/HSU"):
+def instantiate_fm(fm_name, Y, c=None, wavelengths=None, size="large", version="v1", path="."):
     _, B, H, _ = Y.shape
     device = Y.device
 
@@ -332,14 +333,36 @@ def instantiate_fm(fm_name, Y, c=None, size="large", version="v1", path="/home/i
         fm = buildUniverSat._build_model(size="base", modalities_dict=modalities_dict)
         fm.load_state_dict(checkpoint, strict=False)
 
+    elif fm_name == "RAMEN":
+        if H < 224:
+            Y = F.interpolate(Y, size=(224,224))
+            new_H = 224
+        else:
+            new_H = 224
+        Y = Y[:,:,:new_H, :new_H]
+
+        modalities = ["hsi"]
+        modalities_res = {"hsi" : 30}
+        modalities_input_size = {"hsi" : new_H}
+        all_res = [30.0]
+        wavelengths_dict = {"hsi": wavelengths}
+        
+        try:
+            checkpoint = torch.load(f"{path}/pretrained_models/RAMEN/ramen_base_99.ckpt")["state_dict"]#, map_location=device)
+        except:
+            print(f"No pretrained weights found for {fm_name}, please download them and add them to the corresponding folder")
+        
+        fm = RamenViT.RamenViT(modalities, modalities_res, modalities_input_size, all_res=all_res, wavelengths=wavelengths_dict,
+                          embed_dim=768)
+        fm.load_state_dict(checkpoint, strict=False)
     else:
-        raise(f"Fm name {fm_name} is not known, use DOFA, SpecAware, Panopticon, HyperFree, HyperSL, HyperSIGMA, SpecViT, SpecRnDino, SpecRnMoco, UniverSat")
+        raise(f"Fm name {fm_name} is not known, use DOFA, SpecAware, Panopticon, HyperFree, HyperSL, HyperSIGMA, SpecViT, SpecRnDino, SpecRnMoco, UniverSat or RAMEN")
     
     return fm, Y, new_H
 
 def reshape_Y(fm_name, Y, new_H=None, A=None):
 
-    if fm_name == "OFAViT" or fm_name == "DOFA" or fm_name == "SpecAware" or fm_name == "MaskedHSIAutoencoderViT" or fm_name == "Panopticon" or fm_name == "DinoVisionTransformer" or fm_name == "UniverSat":
+    if fm_name == "OFAViT" or fm_name == "DOFA" or fm_name == "SpecAware" or fm_name == "MaskedHSIAutoencoderViT" or fm_name == "Panopticon" or fm_name == "DinoVisionTransformer" or fm_name == "UniverSat" or fm_name == "RAMEN" or fm_name == "RamenViT":
         new_H = 224
 
         if Y.shape[-1] < new_H:
@@ -423,24 +446,18 @@ def extract_f(fm, Y, new_H, wavelengths, A=None, patch_size=None, GSD=None):
         features = fm.get_intermediate_layers(x_dict, n=[11], return_class_token=False)[0][0].T
     
     elif fm_name == "UniverSat":
-        if patch_size is None:
-            patch_size = new_H
-
-        unfold = nn.Unfold(kernel_size=patch_size, stride=patch_size)
-        Y_init_patch = unfold(Y).permute(0,2,1)
-        Y_init_patch = utils.oneD_to_2d(Y_init_patch.reshape(Y_init_patch.shape[1], Y.shape[1], -1))
-        features = torch.zeros(fm.embed_dim, new_H, new_H)
-        n = int(new_H/patch_size)
+        if GSD is None:
+            GSD = 20
 
         with torch.amp.autocast("cuda"):
             with torch.no_grad():
-                for i, patch in enumerate(Y_init_patch):
-                    f, _ = fm.encode({"hsi":patch.unsqueeze(0)}, wavelengths={"hsi":wavelengths}, latent_grid=patch_size**2, input_res={"hsi":30}, subpatches={"hsi":1})
-                    f = utils.oneD_to_2d(f[0].T)
-                    features[:, patch_size*(i//n):patch_size*(i//n)+patch_size, patch_size*(i%n):patch_size*(i%n)+patch_size] = f
-
-                    del f
-                    torch.cuda.empty_cache()    
+                if patch_size is None:
+                    f, _ = fm.encode({"hsi":Y}, wavelengths={"hsi":wavelengths}, latent_grid=new_H**2, input_res={"hsi":GSD}, subpatches={"hsi":1})
+                    features = utils.oneD_to_2d(f[0].T)
+                else:
+                    f, _ = fm.encode({"hsi":Y}, wavelengths={"hsi":wavelengths}, output_grid=patch_size, input_res={"hsi":GSD})
+                    features = f[0].T
+                torch.cuda.empty_cache()  
 
     elif fm_name == "SpectralSharedEncoder": # HyperSL
         if patch_size is None:
@@ -461,9 +478,14 @@ def extract_f(fm, Y, new_H, wavelengths, A=None, patch_size=None, GSD=None):
                     features[:, patch_size*(i//n):patch_size*(i//n)+patch_size, patch_size*(i%n):patch_size*(i%n)+patch_size] = f
                     del f
                     torch.cuda.empty_cache()
+    
+    elif fm_name == "RamenViT": # RAMEN
+        x = {"hsi":Y.unsqueeze(0)}
+        effective_res = 30.0
+        features = fm.forward_proj(x, effective_res)["tokens"][0].T
 
     else:
-        raise("Fm is not known, use DOFA, HyperFree, HyperSIGMA, SpecViT, SpecRnDino, SpecRnMoco, Panopticon or UniverSat")
+        raise("Fm is not known, use DOFA, HyperFree, HyperSIGMA, SpecViT, SpecRnDino, SpecRnMoco, Panopticon, UniverSat or RAMEN")
     
     if A != None:
         return Y, A, features

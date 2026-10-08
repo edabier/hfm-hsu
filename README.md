@@ -6,7 +6,7 @@
 
 <div align="center">
 <!-- <a href="link"><img alt="Pape" src="https://img.shields.io/badge/GRSL-Paper-0068F0?style=flat-square&logo=ieee" /></a> -->
-<a href="link"><img alt="Pape" src="https://img.shields.io/badge/ArXiv-preprint-AA142D?style=flat-square&logo=arxiv" /></a>
+<a href="https://arxiv.org/abs/2609.28283"><img alt="Pape" src="https://img.shields.io/badge/ArXiv-preprint-AA142D?style=flat-square&logo=arxiv" /></a>
 </div>
 
 # Overview
@@ -21,7 +21,7 @@ The framework is illustrated bellow.
 Figure 1. Unmixing from HFM features framework
 </div>
 
-This library currently supports **DOFA**<sup>1</sup>, **HyperFree**<sup>2</sup>, **HyperSIGMA**<sup>3</sup>, **HyperSL**<sup>4</sup>, **Panopticon**<sup>5</sup>,  **SpecAware**<sup>6</sup>, **SpecViT**<sup>7</sup> and **UniverSat**<sup>8</sup>
+This library currently supports **DOFA**<sup>1</sup>, **HyperFree**<sup>2</sup>, **HyperSIGMA**<sup>3</sup>, **HyperSL**<sup>4</sup>, **Panopticon**<sup>5</sup>,  **SpecAware**<sup>6</sup>, **SpecViT**<sup>7</sup>, **UniverSat**<sup>8</sup> and **RAMEN**<sup>9</sup>
 
 # Requirements
 
@@ -56,4 +56,4 @@ If you find our benchmarking tool helpful, please cite it as follows:
 ```
 
 # Aknowledgments
-This project is based on [CNNAEU](https://ieeexplore.ieee.org/document/9096565) and [DeepTrans](https://github.com/preetam22n/DeepTrans-HSU), and it uses [DOFA](https://github.com/zhu-xlab/DOFA)<sup>1</sup>, [HyperFree](https://github.com/Jingtao-Li-CVer/HyperFree)<sup>2</sup>, [HyperSIGMA](https://github.com/WHU-Sigma/HyperSIGMA/tree/main)<sup>3</sup>, [HyperSL](https://github.com/kkweil/HyperSL)<sup>4</sup>, [Panopticon](https://github.com/Panopticon-FM/panopticon)<sup>5</sup>, [SpecAware](https://github.com/busbyjrj/SpecAware)<sup>6</sup>, [SpecViT](https://github.com/AABNassim/spectral_earth)<sup>7</sup> and [UniverSat](https://github.com/gastruc/UniverSat)<sup>8</sup>.<br>
+This project is based on [CNNAEU](https://ieeexplore.ieee.org/document/9096565) and [DeepTrans](https://github.com/preetam22n/DeepTrans-HSU), and it uses [DOFA](https://github.com/zhu-xlab/DOFA)<sup>1</sup>, [HyperFree](https://github.com/Jingtao-Li-CVer/HyperFree)<sup>2</sup>, [HyperSIGMA](https://github.com/WHU-Sigma/HyperSIGMA/tree/main)<sup>3</sup>, [HyperSL](https://github.com/kkweil/HyperSL)<sup>4</sup>, [Panopticon](https://github.com/Panopticon-FM/panopticon)<sup>5</sup>, [SpecAware](https://github.com/busbyjrj/SpecAware)<sup>6</sup>, [SpecViT](https://github.com/AABNassim/spectral_earth)<sup>7</sup>, [UniverSat](https://github.com/gastruc/UniverSat)<sup>8</sup> and [RAMEN](https://github.com/nicolashoudre/RAMEN)<sup>9</sup>.<br>

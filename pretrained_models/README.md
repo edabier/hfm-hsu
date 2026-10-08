@@ -16,4 +16,5 @@ The weight are available at :
 | SpecAware | [Link](https://r2-proxy.3sobs.top/f6UhnB)| [![github](https://img.shields.io/badge/github-blue?logo=github)](https://github.com/busbyjrj/SpecAware)
 | SpecViT | [Link](https://syncandshare.desy.de/index.php/s/Po5bTPipz6EEHx3)| [![github](https://img.shields.io/badge/github-blue?logo=github)](https://github.com/AABNassim/spectral_earth)
 | UniverSat | [Hugging Face](https://huggingface.co/g-astruc/UniverSat)| [![github](https://img.shields.io/badge/github-blue?logo=github)](https://github.com/gastruc/UniverSat)
+| RAMEN | [Hugging Face](https://huggingface.co/g-astruc/UniverSathttps://huggingface.co/nicolashoudre/RAMEN)| [![github](https://img.shields.io/badge/github-blue?logo=github)](https://github.com/nicolashoudre/RAMEN)
 <div>
